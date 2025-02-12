@@ -19,6 +19,22 @@ and voila....
 
 ## Model metrics
 
+```
+Training Metrics:
+accuracy: 0.8857
+precision: 1.0000
+recall: 0.8605
+f1: 0.9250
+average_precision: 0.9992
+
+Testing Metrics:
+accuracy: 0.7736
+precision: 1.0000
+recall: 0.7209
+f1: 0.8378
+average_precision: 0.9865
+```
+
 ![training_metrics](https://github.com/user-attachments/assets/ce1ff337-4f5b-479d-87c1-d549fa85a6c0)
 
 
