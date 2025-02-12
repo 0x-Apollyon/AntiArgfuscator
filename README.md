@@ -43,3 +43,5 @@ average_precision: 0.9865
 This approach is in no way the best one but rather the fastest one. <br>
 I believe creating vector embeddings of each command in the training set and then training a transformer would result in the best accuracy. <br>
 However a transformer is very very computationally expensive and slow. <br>
+<br>
+Another issue I noticed is that the model is somewhat biased towards labelling samples as "unobfuscated". 
