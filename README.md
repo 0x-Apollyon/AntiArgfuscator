@@ -35,7 +35,7 @@ f1: 0.9286
 average_precision: 0.9726
 ```
 
-![training_metrics](https://github.com/user-attachments/assets/ce1ff337-4f5b-479d-87c1-d549fa85a6c0)
+![image](https://github.com/user-attachments/assets/fdd2c8f0-c0b5-4af9-bae4-d9fc72e7a71e)
 
 
 ## Drawbacks
