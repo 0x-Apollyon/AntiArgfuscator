@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import os
 import json
+import re
 
 class PredictionModel:    
     def __init__(self, model_path='obfuscation_model.pkl', encoder_path='label_encoder.pkl'):
@@ -15,9 +16,9 @@ class PredictionModel:
             print("[X] Model files not found. Please ensure the model has been installed")
             sys.exit(1)
     
-    def predict(self, param1, param2, param3, param4 , param5):
+    def predict(self, param1, param2, param3, param4 , param5 , param6 , param7 , param8):
         try:
-            features = np.array([[float(param1), float(param2), float(param3), float(param4), float(param5)]])
+            features = np.array([[float(param1), float(param2), float(param3), float(param4), float(param5), float(param6) , float(param7) , float(param8)]])
             
             prediction = self.model.predict(features)
             result = self.label_encoder.inverse_transform(prediction)[0]
@@ -27,6 +28,10 @@ class PredictionModel:
         except:
             raise print("[X] Invalid input, all parameters must be numeric")
 
+url_regex = re.compile(r"https?://[^\s/$.?#].[^\s]*", re.IGNORECASE)
+windows_file_regex = re.compile(r"[a-zA-Z]:(\\[^\s<>:\"/\\|?*]+)+\\?")
+unix_file_regex = re.compile(r"(/[^/\0]+)+/?")
+
 def generate_parameters(line):
     alnum_count = 0
     quote_count = 0
@@ -35,8 +40,23 @@ def generate_parameters(line):
     lower_case_letters = 0
     upper_case_letters = 0
     currently_word_active = False
+    url_present = 0
+    file_path_present = 0
+    non_ascii_count = 0
+    ascii_count = 0
+            
+    if url_regex.search(line):
+        url_present = 1
+            
+    if windows_file_regex.search(line) or unix_file_regex.search(line):
+        file_path_present = 1
 
     for char in line:
+
+        if ord(char) > 127 or ord(char) < 0:
+            non_ascii_count = non_ascii_count + 1
+        else:
+            ascii_count = ascii_count + 1
 
         if char.isalnum():
             alnum_count = alnum_count + 1
@@ -60,8 +80,9 @@ def generate_parameters(line):
     word_alnum = word_count/alnum_count
     special_ratio = len(line)/alnum_count
     lower_upper_ratio = ((lower_case_letters - upper_case_letters)**2)
+    ascii_ratio = non_ascii_count/ascii_count
 
-    return (quote_alnum,slash_alnum,word_alnum,special_ratio,lower_upper_ratio)
+    return (quote_alnum,slash_alnum,word_alnum,special_ratio,lower_upper_ratio,url_present,file_path_present,ascii_ratio)
             
 try:
     predictor = PredictionModel()
@@ -104,7 +125,7 @@ while True:
             command = input("[*] Input the command: ")
             params = generate_parameters(command)
                 
-            result, confidence = predictor.predict(params[0], params[1], params[2], params[3], params[4])
+            result, confidence = predictor.predict(params[0], params[1], params[2], params[3], params[4], params[5] , params[6] , params[7])
                 
             print("\n[!] Prediction Results:")
             print(f"[!] Classification: {result}")
